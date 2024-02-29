@@ -9,6 +9,8 @@ ERLC=erlc -I $(INC_DIR) -o $(EBIN_DIR) $(ERLC_FLAGS)
 ERL=erl -I -pa $(EBIN_DIR) -noshell -eval
 
 APPNAME=derby
+APPFILE=$(APPNAME).app
+APPSRC=$(SRC_DIR)/$(APPFILE).src
 PARSER_BASE_NAME=$(APPNAME)
 TEST_NAME=$(APPNAME)_test
 LEXER_NAME=$(PARSER_BASE_NAME)_lexer
@@ -22,6 +24,9 @@ defaults: $(EBIN_DIR) test
 $(EBIN_DIR):
 	mkdir -p $(EBIN_DIR)
 
+$(EBIN_DIR)/$(APPFILE): $(APPSRC)
+	cp $(APPSRC) $(EBIN_DIR)/$(APPFILE)
+
 $(SRC_DIR)/$(LEXER_NAME).erl: $(SRC_DIR)/$(LEXER_NAME).xrl
 	$(ERL) 'leex:file("$(SRC_DIR)/$(LEXER_NAME)"), halt().'
 
@@ -33,12 +38,13 @@ $(EBIN_DIR)/%.beam: $(SRC_DIR)/%.erl
 
 test: $(TARGETS) \
 	$(EBIN_DIR)/$(LEXER_NAME).beam \
-	$(EBIN_DIR)/$(PARSER_NAME).beam 
+	$(EBIN_DIR)/$(PARSER_NAME).beam \
+	$(EBIN_DIR)/$(APPFILE)
 	$(ERL) '$(TEST_NAME):test(), halt().'
 
 clean:
 	rm -f erl_crash.dump
 	rm -f $(SRC_DIR)/$(LEXER_NAME).erl
 	rm -f $(SRC_DIR)/$(PARSER_NAME).erl
-	rm -f $(EBIN_DIR)/*.beam
+	rm -rf $(EBIN_DIR)
 
