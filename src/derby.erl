@@ -1,10 +1,13 @@
 -module(derby).
 -export([parse/1, query/1, roll/1, roll/2]).
+-export([modify/2]).
 
 -type times() :: non_neg_integer().
 -type size()  :: non_neg_integer().
 -type roll()  :: {roll, times(), size()} 
                | {roll, times(), size(), list()}.
+-type modifier() :: high | low | plus | minus.
+-type mod()   :: {modifier(), integer()}.
 -type result():: {result, integer(), list(), list(), integer()}.
 
 -spec parse(string()) -> roll().
@@ -21,22 +24,23 @@ query(Query) ->
 -spec roll(list()) -> result().
 roll(Dice) ->
     Result = lists:map(fun rand:uniform/1, Dice),
-    {result, lists:sum(Result), Result, 0}.
+    {result, lists:sum(Result), Result, Result, 0}.
 
 -spec roll(list(), list()) -> result().
 roll(Dice, Mods) ->
-    {result, _, Result, 0} = roll(Dice),
-    {NewResult, Bonus} = lists:foldl(
-                  fun ({Mod, N}, {Acc, B}) -> 
-                          case Mod of
-                              high -> 
-                                  {lists:sublist(lists:reverse(lists:sort(Acc)), N), B};
-                              low  -> 
-                                  {lists:sublist(lists:sort(Acc), N), B};
-                              plus ->
-                                  {Acc, B + N};
-                              minus ->
-                                  {Acc, B - N}
-                          end
-                  end, {Result, 0}, Mods),
-    {result, lists:sum(NewResult) + Bonus, NewResult, Result, Bonus}.
+    lists:foldl(fun modify/2, roll(Dice), Mods).
+
+-spec modify(result(), mod()) -> result().
+modify({Mod, ModVal}, {result, _Total, Result, Orig, Bonus}) ->
+    {NewResult, NewBonus} = case Mod of
+        high ->
+            {lists:sublist(lists:reverse(lists:sort(Result)), ModVal), Bonus};
+        low ->
+            {lists:sublist(lists:sort(Result), ModVal), Bonus};
+        plus ->
+            {Result, Bonus + ModVal};
+        minus ->
+            {Result, Bonus - ModVal}
+    end,
+    {result, lists:sum(NewResult) + NewBonus, NewResult, Orig, NewBonus}.
+
