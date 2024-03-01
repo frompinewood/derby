@@ -2,8 +2,6 @@
 
 Erlang dice rolling library using leex and yecc.
 
-Use `make` to build lexer and parser `erl` files.
-
 ## Examples
 ```erlang
 1> derby:query("4d6h3").
