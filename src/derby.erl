@@ -1,12 +1,12 @@
 -module(derby).
--export([parse/1, query/1, roll/1, roll/2]).
+-export([parse/1, possible/1, query/1, roll/1]).
 -export([modify/2]).
 
--type times() :: non_neg_integer().
--type size()  :: non_neg_integer().
--type roll()  :: {roll, times(), size()} 
-               | {roll, times(), size(), list()}.
--type modifier() :: high | low | plus | minus.
+-type roll()  :: {roll, list(integer()), integer(), list(modifier())}.
+-type modifier() :: high 
+                  | low 
+                  | plus 
+                  | minus.
 -type mod()   :: {modifier(), integer()}.
 -type result():: {result, integer(), list(), list(), integer()}.
 
@@ -18,29 +18,29 @@ parse(Str) ->
 
 -spec query(string()) -> result().
 query(Query) ->
-    {roll, Times, Size, Mods} = parse(Query),
-    roll([Size || _ <- lists:seq(1, Times)], Mods).
+    roll(parse(Query)).
 
--spec roll(list()) -> result().
-roll(Dice) ->
-    Result = lists:map(fun rand:uniform/1, Dice),
-    {result, lists:sum(Result), Result, Result, 0}.
-
--spec roll(list(), list()) -> result().
-roll(Dice, Mods) ->
-    lists:foldl(fun modify/2, roll(Dice), Mods).
+-spec roll(roll()) -> result().
+roll({roll, Dice, Bonus, Mods}) ->
+    DiceResult = lists:map(fun rand:uniform/1, Dice),
+    ModdedResult = lists:foldl(fun modify/2, DiceResult, Mods),
+    {result, lists:sum(ModdedResult) + Bonus, ModdedResult, DiceResult, Bonus}.
 
 -spec modify(result(), mod()) -> result().
-modify({Mod, ModVal}, {result, _Total, Result, Orig, Bonus}) ->
-    {NewResult, NewBonus} = case Mod of
+modify({Mod, ModVal}, Result) ->
+    case Mod of
         high ->
-            {lists:sublist(lists:reverse(lists:sort(Result)), ModVal), Bonus};
+            lists:sublist(lists:reverse(lists:sort(Result)), ModVal);
         low ->
-            {lists:sublist(lists:sort(Result), ModVal), Bonus};
-        plus ->
-            {Result, Bonus + ModVal};
-        minus ->
-            {Result, Bonus - ModVal}
-    end,
-    {result, lists:sum(NewResult) + NewBonus, NewResult, Orig, NewBonus}.
+            lists:sublist(lists:sort(Result), ModVal) 
+    end.
 
+possible({roll, Dice, Bonus, Mods}) ->
+    Possible = possible(Dice),
+    lists:map(fun (L) -> lists:sum(L) + Bonus end,
+      lists:map(fun (P) -> lists:foldl(fun modify/2, P, Mods) end, Possible));
+possible([H|T]) -> 
+    possible([[X] || X <- lists:seq(1, H)], T).
+possible(Acc, []) -> Acc;
+possible(Acc, [H|T]) ->
+    possible([X++[Y] || X <- Acc, Y <- lists:seq(1, H)], T).

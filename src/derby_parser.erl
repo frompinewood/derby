@@ -1,8 +1,27 @@
 -module(derby_parser).
 -export([parse/1, parse_and_scan/1, format_error/1]).
--file("src/derby_parser.yrl", 21).
+-file("src/derby_parser.yrl", 23).
 
-expand({_,_,N}) -> N.
+expand_roll(Times, Size) ->
+    [Size || _ <- lists:seq(1, Times)].
+
+filter_mod(Mods) ->
+    lists:filter(fun ({high,_}) -> true;
+                     ({low,_})  -> true;
+                     (_)    -> false end, Mods).
+
+bonus_sum(Mods) ->
+    bonus_sum(Mods, 0).
+bonus_sum(   [], Acc) -> Acc;
+bonus_sum([{M,V}|T], Acc) ->
+    case M of
+        plus -> bonus_sum(T, Acc + V);
+        minus -> bonus_sum(T, Acc - V);
+        _     -> bonus_sum(T, Acc)
+    end.
+    
+strip_token({_,_,N}) -> N.
+
 
 -file("/opt/homebrew/Cellar/erlang/26.2.1/lib/erlang/lib/parsetools-2.5/include/yeccpre.hrl", 0).
 %%
@@ -183,7 +202,7 @@ yecctoken2string1(Other) ->
 
 
 
--file("src/derby_parser.erl", 186).
+-file("src/derby_parser.erl", 205).
 
 -dialyzer({nowarn_function, yeccpars2/7}).
 -compile({nowarn_unused_function,  yeccpars2/7}).
@@ -312,11 +331,11 @@ yeccgoto_roll(0, Cat, Ss, Stack, T, Ts, Tzr) ->
 -compile({inline,yeccpars2_3_/1}).
 -dialyzer({nowarn_function, yeccpars2_3_/1}).
 -compile({nowarn_unused_function,  yeccpars2_3_/1}).
--file("src/derby_parser.yrl", 15).
+-file("src/derby_parser.yrl", 17).
 yeccpars2_3_(__Stack0) ->
  [___1 | __Stack] = __Stack0,
  [begin
-          expand(___1)
+          strip_token(___1)
   end | __Stack].
 
 -compile({inline,yeccpars2_5_/1}).
@@ -326,7 +345,7 @@ yeccpars2_3_(__Stack0) ->
 yeccpars2_5_(__Stack0) ->
  [___3,___2,___1 | __Stack] = __Stack0,
  [begin
-                       {roll, ___1, ___3, []}
+                       {roll, expand_roll(___1, ___3), 0, []}
   end | __Stack].
 
 -compile({inline,yeccpars2_6_/1}).
@@ -336,13 +355,15 @@ yeccpars2_5_(__Stack0) ->
 yeccpars2_6_(__Stack0) ->
  [___4,___3,___2,___1 | __Stack] = __Stack0,
  [begin
-                                 {roll, ___1, ___3, ___4}
+                                 {roll, 
+                                expand_roll(___1, ___3), 
+                                bonus_sum(___4), filter_mod(___4)}
   end | __Stack].
 
 -compile({inline,yeccpars2_7_/1}).
 -dialyzer({nowarn_function, yeccpars2_7_/1}).
 -compile({nowarn_unused_function,  yeccpars2_7_/1}).
--file("src/derby_parser.yrl", 7).
+-file("src/derby_parser.yrl", 9).
 yeccpars2_7_(__Stack0) ->
  [___1 | __Stack] = __Stack0,
  [begin
@@ -352,17 +373,17 @@ yeccpars2_7_(__Stack0) ->
 -compile({inline,yeccpars2_9_/1}).
 -dialyzer({nowarn_function, yeccpars2_9_/1}).
 -compile({nowarn_unused_function,  yeccpars2_9_/1}).
--file("src/derby_parser.yrl", 12).
+-file("src/derby_parser.yrl", 14).
 yeccpars2_9_(__Stack0) ->
  [___2,___1 | __Stack] = __Stack0,
  [begin
-                 {expand(___1), ___2}
+                 {strip_token(___1), ___2}
   end | __Stack].
 
 -compile({inline,yeccpars2_10_/1}).
 -dialyzer({nowarn_function, yeccpars2_10_/1}).
 -compile({nowarn_unused_function,  yeccpars2_10_/1}).
--file("src/derby_parser.yrl", 9).
+-file("src/derby_parser.yrl", 11).
 yeccpars2_10_(__Stack0) ->
  [___2,___1 | __Stack] = __Stack0,
  [begin
@@ -370,4 +391,4 @@ yeccpars2_10_(__Stack0) ->
   end | __Stack].
 
 
--file("src/derby_parser.yrl", 24).
+-file("src/derby_parser.yrl", 45).
