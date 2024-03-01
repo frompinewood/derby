@@ -3,7 +3,8 @@
 
 test() -> 
     test_parse(),
-    test_roll().
+    test_roll(),
+    test_chance().
 
 test_parse() ->
     {roll, [20], 0, []} = derby:parse("1d20"),
@@ -15,4 +16,7 @@ test_parse() ->
 test_roll() ->
     {result, 4, [1,1,1], [1,1,1,1],  1} = derby:query("4d1h3+1"),
     {result, 2, [1,1,1], [1,1,1,1], -1} = derby:query("4d1l3-1").
+
+test_chance() ->
+    1/400 = derby:chance({roll, [20,20], 0, [{low, 1}]}, 20).
 

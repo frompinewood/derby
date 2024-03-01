@@ -1,6 +1,5 @@
 -module(derby).
--export([parse/1, possible/1, query/1, roll/1]).
--export([modify/2]).
+-export([parse/1, possible/1, query/1, roll/1, chance/2]).
 
 -type roll()  :: {roll, list(integer()), integer(), list(modifier())}.
 -type modifier() :: high 
@@ -35,6 +34,7 @@ modify({Mod, ModVal}, Result) ->
             lists:sublist(lists:sort(Result), ModVal) 
     end.
 
+-spec possible(roll()) -> list(integer()).
 possible({roll, Dice, Bonus, Mods}) ->
     Possible = possible(Dice),
     lists:map(fun (L) -> lists:sum(L) + Bonus end,
@@ -44,3 +44,9 @@ possible([H|T]) ->
 possible(Acc, []) -> Acc;
 possible(Acc, [H|T]) ->
     possible([X++[Y] || X <- Acc, Y <- lists:seq(1, H)], T).
+
+-spec chance(roll(), integer()) -> float().
+chance(Roll, Target) ->
+    P = possible(Roll),
+    S = lists:filter(fun (X) -> X >= Target end, P),
+    length(S)/length(P).
