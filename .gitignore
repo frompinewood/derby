@@ -1,3 +1,5 @@
 ebin/
+src/derby_parser.erl
+src/derby_lexer.erl
 erl_crash.dump
 _build/
