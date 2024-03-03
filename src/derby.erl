@@ -51,7 +51,7 @@ possible(Acc, [H|T]) ->
     possible([X++[Y] || X <- Acc, Y <- lists:seq(1, H)], T).
 
 -spec chance(roll(), integer()) -> float().
-chance(Roll, Target) ->
+chance({roll, _, _, _} = Roll, Target) ->
     P = possible(Roll),
     S = lists:filter(fun (X) -> X >= Target end, P),
     length(S)/length(P).

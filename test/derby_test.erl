@@ -23,4 +23,4 @@ query_minus_test() ->
     ?assertEqual({result, 2, [1,1,1], [1,1,1,1], -1}, derby:query("4d1l3-1")).
 
 chance_test() ->
-    ?assertEqual(1/400, derby:chance("2d20l1", 20)).
+    ?assertEqual(1/400, derby:chance(derby:parse("2d20l1"), 20)).
