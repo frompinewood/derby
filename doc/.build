@@ -3,7 +3,6 @@ api-reference.html
 derby.html
 derby_lexer.html
 derby_parser.html
-derby_test.html
 dist/handlebars.runtime-NWIB6V2M.js
 dist/handlebars.templates-EPF2X7PV.js
 dist/html-J2ASZTQE.js
@@ -31,8 +30,8 @@ dist/merriweather-latin-ext-300-normal-K6L27CZ5.woff2
 dist/merriweather-vietnamese-300-italic-EHHNZPUO.woff2
 dist/merriweather-vietnamese-300-normal-U376L4Z4.woff2
 dist/remixicon-NKANDIL5.woff2
-dist/search_data-44B7891E.js
-dist/sidebar_items-36291499.js
+dist/search_data-C444E0DF.js
+dist/sidebar_items-29F56823.js
 index.html
 license.html
 readme.html
