@@ -13,7 +13,7 @@
 
     <script src="dist/handlebars.runtime-NWIB6V2M.js"></script>
     <script src="dist/handlebars.templates-EPF2X7PV.js"></script>
-    <script src="dist/sidebar_items-29F56823.js"></script>
+    <script src="dist/sidebar_items-EE5A9632.js"></script>
 
       <script src="docs_config.js"></script>
 
@@ -167,6 +167,14 @@ Pages
 
     </div>
 
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#t:rolls/0" translate="no">rolls/0</a>
+
+      </div>
+
+    </div>
+
 </div>
 <div class="summary-functions summary">
   <h2>
@@ -191,7 +199,7 @@ Pages
 
     <div class="summary-row">
       <div class="summary-signature">
-        <a href="#possible/1" translate="no">possible(T)</a>
+        <a href="#possible/1" translate="no">possible(Rolls)</a>
 
       </div>
 
@@ -207,7 +215,7 @@ Pages
 
     <div class="summary-row">
       <div class="summary-signature">
-        <a href="#roll/1" translate="no">roll(_)</a>
+        <a href="#roll/1" translate="no">roll(Rolls)</a>
 
       </div>
 
@@ -291,7 +299,7 @@ Pages
     </a>
     <h1 class="signature" translate="no">result/0</h1>
 
-      <a href="https://github.com/frompinewood/derby/blob/v0.1.0/src/derby.erl#L10" class="icon-action" rel="help" title="View Source">
+      <a href="https://github.com/frompinewood/derby/blob/v0.1.0/src/derby.erl#L11" class="icon-action" rel="help" title="View Source">
        <i class="ri-code-s-slash-line" aria-hidden="true"></i>
        <span class="sr-only">View Source</span>
      </a>
@@ -338,6 +346,34 @@ Pages
 
   </section>
 </section>
+<section class="detail" id="t:rolls/0">
+
+  <div class="detail-header">
+    <a href="#t:rolls/0" class="detail-link" title="Link to this type">
+      <i class="ri-link-m" aria-hidden="true"></i>
+      <span class="sr-only">Link to this type</span>
+    </a>
+    <h1 class="signature" translate="no">rolls/0</h1>
+
+      <a href="https://github.com/frompinewood/derby/blob/v0.1.0/src/derby.erl#L10" class="icon-action" rel="help" title="View Source">
+       <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+       <span class="sr-only">View Source</span>
+     </a>
+
+
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">-type</span> rolls() :: [<a href="#t:roll/0">roll</a>()].</pre>
+
+      </div>
+
+
+  </section>
+</section>
 
     </div>
   </section>
@@ -359,7 +395,7 @@ Pages
     </a>
     <h1 class="signature" translate="no">chance(Roll, Target)</h1>
 
-      <a href="https://github.com/frompinewood/derby/blob/v0.1.0/src/derby.erl#L54" class="icon-action" rel="help" title="View Source">
+      <a href="https://github.com/frompinewood/derby/blob/v0.1.0/src/derby.erl#L59" class="icon-action" rel="help" title="View Source">
        <i class="ri-code-s-slash-line" aria-hidden="true"></i>
        <span class="sr-only">View Source</span>
      </a>
@@ -371,7 +407,7 @@ Pages
 
       <div class="specs">
 
-          <pre translate="no"><span class="attribute">-spec</span> chance(<a href="#t:roll/0">roll</a>(), integer()) -> float().</pre>
+          <pre translate="no"><span class="attribute">-spec</span> chance(<a href="#t:rolls/0">rolls</a>(), integer()) -> float().</pre>
 
       </div>
 
@@ -387,7 +423,7 @@ Pages
     </a>
     <h1 class="signature" translate="no">parse(Str)</h1>
 
-      <a href="https://github.com/frompinewood/derby/blob/v0.1.0/src/derby.erl#L13" class="icon-action" rel="help" title="View Source">
+      <a href="https://github.com/frompinewood/derby/blob/v0.1.0/src/derby.erl#L14" class="icon-action" rel="help" title="View Source">
        <i class="ri-code-s-slash-line" aria-hidden="true"></i>
        <span class="sr-only">View Source</span>
      </a>
@@ -399,7 +435,7 @@ Pages
 
       <div class="specs">
 
-          <pre translate="no"><span class="attribute">-spec</span> parse(string()) -> <a href="#t:roll/0">roll</a>().</pre>
+          <pre translate="no"><span class="attribute">-spec</span> parse(string()) -> <a href="#t:rolls/0">rolls</a>().</pre>
 
       </div>
 
@@ -413,9 +449,9 @@ Pages
       <i class="ri-link-m" aria-hidden="true"></i>
       <span class="sr-only">Link to this function</span>
     </a>
-    <h1 class="signature" translate="no">possible(T)</h1>
+    <h1 class="signature" translate="no">possible(Rolls)</h1>
 
-      <a href="https://github.com/frompinewood/derby/blob/v0.1.0/src/derby.erl#L39" class="icon-action" rel="help" title="View Source">
+      <a href="https://github.com/frompinewood/derby/blob/v0.1.0/src/derby.erl#L42" class="icon-action" rel="help" title="View Source">
        <i class="ri-code-s-slash-line" aria-hidden="true"></i>
        <span class="sr-only">View Source</span>
      </a>
@@ -443,7 +479,7 @@ Pages
     </a>
     <h1 class="signature" translate="no">query(Query)</h1>
 
-      <a href="https://github.com/frompinewood/derby/blob/v0.1.0/src/derby.erl#L19" class="icon-action" rel="help" title="View Source">
+      <a href="https://github.com/frompinewood/derby/blob/v0.1.0/src/derby.erl#L20" class="icon-action" rel="help" title="View Source">
        <i class="ri-code-s-slash-line" aria-hidden="true"></i>
        <span class="sr-only">View Source</span>
      </a>
@@ -469,9 +505,9 @@ Pages
       <i class="ri-link-m" aria-hidden="true"></i>
       <span class="sr-only">Link to this function</span>
     </a>
-    <h1 class="signature" translate="no">roll(_)</h1>
+    <h1 class="signature" translate="no">roll(Rolls)</h1>
 
-      <a href="https://github.com/frompinewood/derby/blob/v0.1.0/src/derby.erl#L23" class="icon-action" rel="help" title="View Source">
+      <a href="https://github.com/frompinewood/derby/blob/v0.1.0/src/derby.erl#L24" class="icon-action" rel="help" title="View Source">
        <i class="ri-code-s-slash-line" aria-hidden="true"></i>
        <span class="sr-only">View Source</span>
      </a>
