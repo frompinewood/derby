@@ -5,11 +5,12 @@
                   | low 
                   | plus 
                   | minus.
--type mod()   :: {mod_type(), integer()}.
--type roll()  :: {roll, list(integer()), integer(), list(mod_type())}. 
--type result():: {result, integer(), list(), list(), integer()}.
+-type mod()    :: {mod_type(), integer()}.
+-type roll()   :: {roll, list(integer()), integer(), list(mod_type())}. 
+-type rolls()  :: list(roll()).
+-type result() :: {result, integer(), list(), list(), integer()}.
 
--spec parse(string()) -> roll().
+-spec parse(string()) -> rolls().
 parse(Str) ->
     {ok, Tokens, _} = derby_lexer:string(Str),
     {ok, Roll} = derby_parser:parse(Tokens),
@@ -23,7 +24,9 @@ query(Query) ->
 roll({roll, Dice, Bonus, Mods}) ->
     DiceResult = lists:map(fun rand:uniform/1, Dice),
     ModdedResult = lists:foldl(fun modify/2, DiceResult, Mods),
-    {result, lists:sum(ModdedResult) + Bonus, ModdedResult, DiceResult, Bonus}.
+    {result, lists:sum(ModdedResult) + Bonus, ModdedResult, DiceResult, Bonus};
+roll(Rolls) ->
+    lists:map(fun roll/1, Rolls).
 
 -spec modify(result(), mod()) -> result().
 modify({Mod, ModVal}, Result) ->
@@ -43,6 +46,8 @@ possible({roll, Dice, Bonus, Mods}) ->
       lists:map(fun (P) -> 
             lists:foldl(fun modify/2, P, Mods) end, Possible));
 
+possible([{roll, _, _, _} = _|_] = Rolls) ->
+    lists:map(fun possible/1, Rolls);
 possible([H|T]) -> 
     possible([[X] || X <- lists:seq(1, H)], T).
 
@@ -50,8 +55,9 @@ possible(Acc, []) -> Acc;
 possible(Acc, [H|T]) ->
     possible([[Y|X] || X <- Acc, Y <- lists:seq(1, H)], T).
 
--spec chance(roll(), integer()) -> float().
+-spec chance(rolls(), integer()) -> float().
 chance({roll, _, _, _} = Roll, Target) ->
     P = possible(Roll),
     S = lists:filter(fun (X) -> X >= Target end, P),
     length(S)/length(P).
+

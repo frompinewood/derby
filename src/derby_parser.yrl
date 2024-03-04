@@ -1,6 +1,11 @@
-Nonterminals number roll full_mod full_mods.
+Nonterminals number roll rolls full_mod full_mods.
 Terminals int die mod.
-Rootsymbol roll.
+Rootsymbol rolls.
+
+rolls ->
+    roll: ['$1'].
+rolls ->
+    roll rolls: ['$1' | '$2'].
 
 roll -> 
     number die number: {roll, expand_roll('$1', '$3'), 0, []}.
