@@ -48,7 +48,7 @@ possible([H|T]) ->
 
 possible(Acc, []) -> Acc;
 possible(Acc, [H|T]) ->
-    possible([X++[Y] || X <- Acc, Y <- lists:seq(1, H)], T).
+    possible([[Y|X] || X <- Acc, Y <- lists:seq(1, H)], T).
 
 -spec chance(roll(), integer()) -> float().
 chance({roll, _, _, _} = Roll, Target) ->
