@@ -1,5 +1,9 @@
-{application, derby, 
- [{description, "dice rolling library"},
-  {id, "Derby"},
-  {modules, [derby]},
-  {vsn, "0.1.0"}]}.
+{application,derby,
+             [{description,"A dice rolling library capable of calculating complex roll chances."},
+              {vsn,"0.1.1"},
+              {registered,[]},
+              {applications,[kernel,stdlib]},
+              {env,[]},
+              {modules,[]},
+              {licenses,["MIT"]},
+              {links,[]}]}.
