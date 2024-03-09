@@ -13,9 +13,12 @@ Erlang dice rolling library using leex and yecc.
 3> derby:roll({roll,[20,20],3,[{high, 1}]}).
 [{result,16,[13],[13,12],3}]
 
-5> [Roll] = derby:parse("2d20l1", 20),
-4> derby:chance(Roll,20).
+4> [Roll] = derby:parse("2d20l1", 20),
+5> derby:chance(Roll,20).
 0.0025
+
+6> derby:format("I cast fireball for ~p damage. My intimidation check is a ~p.", ["10d6, 2d20h1"]).
+"I cast fireball for 33 damage. My intimidation check is a 17."
 ```
 
 
