@@ -25,3 +25,9 @@ query_minus_test() ->
 chance_test() ->
     [Roll] = derby:parse("2d20l1"),
     ?assertEqual(1/400, derby:chance(Roll, 20)).
+
+format_simple_test() ->
+    ?assertEqual("I do 15 damage!", derby:format("I do ~p damage!", [{result, 15, [6,6,3],[6,6,3],0}])).
+
+format_compound_test() ->
+    derby:format("My two attacks do ~p and ~p damage!", ["3d6+3","4d4+3"]).

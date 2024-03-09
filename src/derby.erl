@@ -1,6 +1,7 @@
 -module(derby).
--export([parse/1, possible/1, query/1, roll/1, chance/2]).
+-export([parse/1, possible/1, query/1, roll/1, chance/2, format/2]).
 
+%% TODO: rewrite to make these records or maps
 -type mod_type() :: high 
                   | low 
                   | plus 
@@ -61,3 +62,11 @@ chance({roll, _, _, _} = Roll, Target) ->
     S = lists:filter(fun (X) -> X >= Target end, P),
     length(S)/length(P).
 
+-spec format(string(), rolls()) -> string().
+format(String, Rolls) ->
+    lists:flatten(io_lib:format(String, lists:flatten(lists:map(fun reduce_value/1, Rolls)))).
+
+reduce_value({result, Total, _, _, _}) -> Total;
+reduce_value({roll, _, _, _} = Roll) -> 
+    reduce_value(roll(Roll));
+reduce_value(Str) -> lists:map(fun reduce_value/1, parse(Str)).
