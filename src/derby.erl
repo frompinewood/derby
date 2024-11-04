@@ -14,20 +14,20 @@
 
 -spec parse(string()) -> rolls().
 parse(Str) ->
-    {ok, Tokens, _} = derby_lexer:string(Str),
-    {ok, Roll} = derby_parser:parse(Tokens),
-    Roll.
+    maybe
+	    {ok, Tokens, _} ?= derby_lexer:string(Str),
+	    {ok, Roll} ?= derby_parser:parse(Tokens),
+	    Roll
+    else
+        _ -> {error, "Bad expression: " ++ Str}
+    end.
 
 -spec query(string()) -> result().
 query(Query) ->
-    try
-        roll(parse(Query))
-     catch 
-        _:_ ->
-              {error, "Bad query " ++ query}
-    end.
+    roll(parse(Query)).
 
 -spec roll(roll()) -> result().
+roll({error, _} = Error) -> Error;
 roll({roll, Dice, Bonus, Mods}) ->
     DiceResult = lists:map(fun rand:uniform/1, Dice),
     ModdedResult = lists:foldl(fun modify/2, DiceResult, Mods),
