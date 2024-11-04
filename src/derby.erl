@@ -1,5 +1,6 @@
 -module(derby).
 -export([parse/1, possible/1, query/1, roll/1, chance/2, format/2]).
+-include_lib("eunit/include/eunit.hrl").
 
 %% TODO: rewrite to make these records or maps
 -type mod_type() :: high 
@@ -19,7 +20,12 @@ parse(Str) ->
 
 -spec query(string()) -> result().
 query(Query) ->
-    roll(parse(Query)).
+    try
+        roll(parse(Query))
+     catch 
+        _:_ ->
+              {error, "Bad query " ++ query}
+    end.
 
 -spec roll(roll()) -> result().
 roll({roll, Dice, Bonus, Mods}) ->
@@ -70,3 +76,38 @@ reduce_value({result, Total, _, _, _}) -> Total;
 reduce_value({roll, _, _, _} = Roll) -> 
     reduce_value(roll(Roll));
 reduce_value(Str) -> lists:map(fun reduce_value/1, parse(Str)).
+
+
+parse_test() ->
+    ?assertEqual([{roll, [20], 0, []}], derby:parse("1d20")).
+
+parse_high_test() ->
+    ?assertEqual([{roll, [20], 0, [{high, 1}]}], derby:parse("1d20h1")).
+
+parse_high_low_test() ->
+    ?assertEqual([{roll, [20], 0, [{high, 1}, {low, 1}]}], derby:parse("1d20h1l1")). 
+
+parse_bonus_test() ->
+    ?assertEqual([{roll, [20], 1, []}], derby:parse("1d20+1")).
+
+parse_multi_high_test() ->
+    ?assertEqual([{roll, [6,6,6], 0, [{high, 3}]}], derby:parse("3d6h3")).
+
+query_plus_test() ->
+    ?assertEqual([{result, 4, [1,1,1], [1,1,1,1],  1}], derby:query("4d1h3+1")).
+
+query_minus_test() ->
+    ?assertEqual([{result, 2, [1,1,1], [1,1,1,1], -1}], derby:query("4d1l3-1")).
+
+chance_test() ->
+    [Roll] = derby:parse("2d20l1"),
+    ?assertEqual(1/400, derby:chance(Roll, 20)).
+
+format_simple_test() ->
+    ?assertEqual("I do 15 damage!", derby:format("I do ~p damage!", [{result, 15, [6,6,3],[6,6,3],0}])).
+
+format_compound_test() ->
+    derby:format("My two attacks do ~p and ~p damage!", ["3d6+3","4d4+3"]).
+
+bad_query_test() ->
+    {error, _} = derby:query("1d").
