@@ -54,7 +54,7 @@ possible({roll, Dice, Bonus, Mods}) ->
             lists:foldl(fun modify/2, P, Mods) end, Possible));
 
 possible([{roll, _, _, _} = _|_] = Rolls) ->
-    lists:map(fun possible/1, Rolls);
+    sum_permutations(lists:map(fun possible/1, Rolls));
 possible([H|T]) -> 
     possible([[X] || X <- lists:seq(1, H)], T).
 
@@ -63,8 +63,8 @@ possible(Acc, [H|T]) ->
     possible([[Y|X] || X <- Acc, Y <- lists:seq(1, H)], T).
 
 -spec chance(rolls(), integer()) -> float().
-chance({roll, _, _, _} = Roll, Target) ->
-    P = possible(Roll),
+chance(Rolls, Target) when is_list(Rolls) ->
+    P = possible(Rolls),
     S = lists:filter(fun (X) -> X >= Target end, P),
     length(S)/length(P).
 
@@ -77,6 +77,15 @@ reduce_value({roll, _, _, _} = Roll) ->
     reduce_value(roll(Roll));
 reduce_value(Str) -> lists:map(fun reduce_value/1, parse(Str)).
 
+sum_permutations(List) ->
+    sum_permutations(List, []).
+
+sum_permutations([], Acc) ->
+    Acc;
+sum_permutations([H|T], []) ->
+    sum_permutations(T, H);
+sum_permutations([H|T], Acc) ->
+    sum_permutations(T, [X + Y || X <- H, Y <- Acc]).
 
 parse_test() ->
     ?assertEqual([{roll, [20], 0, []}], derby:parse("1d20")).
@@ -100,8 +109,8 @@ query_minus_test() ->
     ?assertEqual([{result, 2, [1,1,1], [1,1,1,1], -1}], derby:query("4d1l3-1")).
 
 chance_test() ->
-    [Roll] = derby:parse("2d20l1"),
-    ?assertEqual(1/400, derby:chance(Roll, 20)).
+    Rolls = derby:parse("2d20l1"),
+    ?assertEqual(1/400, derby:chance(Rolls, 20)).
 
 format_simple_test() ->
     ?assertEqual("I do 15 damage!", derby:format("I do ~p damage!", [{result, 15, [6,6,3],[6,6,3],0}])).

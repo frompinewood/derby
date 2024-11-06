@@ -1,6 +1,6 @@
 {application,derby,
              [{description,"A dice rolling library capable of calculating complex roll chances."},
-              {vsn,"0.1.4"},
+              {vsn,"0.2.0"},
               {registered,[]},
               {applications,[kernel,stdlib]},
               {env,[]},
